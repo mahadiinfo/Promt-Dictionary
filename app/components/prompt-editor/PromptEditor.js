@@ -86,11 +86,10 @@ export default function PromptEditor({ prompt, isFullscreen, onToggleFullscreen 
   const [values, setValues] = useState({});
   const [activePhKey, setActivePhKey] = useState(null);
 
-  const [mode, setMode] = useState("edit"); // "edit" | "read"
+  const [mode, setMode] = useState("read"); // "edit" = raw textarea, "read" = highlighted with clickable placeholders
   const [panelOpen, setPanelOpen] = useState(true);
   const [mobilePanelOpen, setMobilePanelOpen] = useState(false);
   const [lineNumbers, setLineNumbers] = useState(false);
-  const [rawMode, setRawMode] = useState(false);
 
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
