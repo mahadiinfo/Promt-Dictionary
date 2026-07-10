@@ -410,14 +410,15 @@ export default function PromptEditor({ prompt, isFullscreen, onToggleFullscreen 
 
       {/* Body */}
       <div className="grid min-h-0 flex-1 grid-cols-1 md:grid-cols-[minmax(0,1fr)_auto]">
-        <div className="flex min-h-0 flex-col overflow-hidden">
+        <div className="flex min-h-0 min-w-0 flex-col overflow-hidden">
           <div className="min-h-0 flex-1 overflow-y-auto p-3 sm:p-5">
-            {rawMode && mode === "edit" ? (
+            {mode === "edit" ? (
               <textarea
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
-                className="min-h-[280px] w-full resize-y rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-4 font-mono text-xs leading-relaxed text-[var(--color-fg)] outline-none focus:border-[var(--color-brand)] focus:ring-2 focus:ring-[var(--color-brand-soft)] sm:p-5"
+                className="h-full min-h-[280px] w-full resize-none rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-4 font-mono text-[13px] leading-relaxed text-[var(--color-fg)] outline-none focus:border-[var(--color-brand)] focus:ring-2 focus:ring-[var(--color-brand-soft)] sm:p-5"
                 spellCheck={false}
+                placeholder="Edit the prompt text..."
               />
             ) : (
               <PlaceholderHighlighter
@@ -426,7 +427,7 @@ export default function PromptEditor({ prompt, isFullscreen, onToggleFullscreen 
                 search={searchQuery}
                 activeMatchIndex={activeMatch}
                 activePhKey={activePhKey}
-                onPlaceholderClick={mode === "read" ? undefined : (key) => focusPh(key)}
+                onPlaceholderClick={(key) => focusPh(key)}
                 lineNumbers={lineNumbers}
                 onMatchesChange={setMatchCount}
               />
@@ -452,7 +453,7 @@ export default function PromptEditor({ prompt, isFullscreen, onToggleFullscreen 
 
         {/* Desktop variables panel */}
         {panelOpen && (
-          <div className="hidden shrink-0 border-l border-[var(--color-border)] md:block md:w-72 lg:w-80">
+          <div className="hidden min-h-0 shrink-0 overflow-hidden border-l border-[var(--color-border)] md:block md:w-72 lg:w-80">
             {variablesPanel}
           </div>
         )}
