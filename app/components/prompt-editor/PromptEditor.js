@@ -5,7 +5,6 @@ import {
   BookOpen,
   CheckCircle2,
   ClipboardCopy,
-  Code2,
   Copy,
   Eye,
   FileText,
@@ -86,11 +85,10 @@ export default function PromptEditor({ prompt, isFullscreen, onToggleFullscreen 
   const [values, setValues] = useState({});
   const [activePhKey, setActivePhKey] = useState(null);
 
-  const [mode, setMode] = useState("edit"); // "edit" | "read"
+  const [mode, setMode] = useState("read"); // "edit" = raw textarea, "read" = highlighted with clickable placeholders
   const [panelOpen, setPanelOpen] = useState(true);
   const [mobilePanelOpen, setMobilePanelOpen] = useState(false);
   const [lineNumbers, setLineNumbers] = useState(false);
-  const [rawMode, setRawMode] = useState(false);
 
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -296,18 +294,16 @@ export default function PromptEditor({ prompt, isFullscreen, onToggleFullscreen 
       {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-1.5 border-b border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2">
         <div className="flex flex-wrap items-center gap-1">
-          <ToolbarBtn
-            onClick={() => setMode(mode === "edit" ? "read" : "edit")}
-            icon={mode === "edit" ? <Eye className="h-3.5 w-3.5" /> : <Pencil className="h-3.5 w-3.5" />}
-            active={mode === "read"}
-          >
-            {mode === "edit" ? "Read" : "Edit"}
-          </ToolbarBtn>
+          <div className="inline-flex items-center rounded-md border border-[var(--color-border)] bg-[var(--color-bg)] p-0.5">
+            <SegBtn active={mode === "read"} onClick={() => setMode("read")} icon={<Eye className="h-3.5 w-3.5" />}>
+              Read
+            </SegBtn>
+            <SegBtn active={mode === "edit"} onClick={() => setMode("edit")} icon={<Pencil className="h-3.5 w-3.5" />}>
+              Edit
+            </SegBtn>
+          </div>
           <ToolbarBtn onClick={() => setSearchOpen((s) => !s)} icon={<SearchIcon className="h-3.5 w-3.5" />} active={searchOpen}>
             <span className="hidden sm:inline">Find</span>
-          </ToolbarBtn>
-          <ToolbarBtn onClick={() => setRawMode((r) => !r)} icon={<Code2 className="h-3.5 w-3.5" />} active={rawMode}>
-            <span className="hidden sm:inline">Raw</span>
           </ToolbarBtn>
           <ToolbarBtn onClick={() => setLineNumbers((v) => !v)} icon={<Hash className="h-3.5 w-3.5" />} active={lineNumbers}>
             <span className="hidden sm:inline">Lines</span>
@@ -413,14 +409,15 @@ export default function PromptEditor({ prompt, isFullscreen, onToggleFullscreen 
 
       {/* Body */}
       <div className="grid min-h-0 flex-1 grid-cols-1 md:grid-cols-[minmax(0,1fr)_auto]">
-        <div className="flex min-h-0 flex-col overflow-hidden">
+        <div className="flex min-h-0 min-w-0 flex-col overflow-hidden">
           <div className="min-h-0 flex-1 overflow-y-auto p-3 sm:p-5">
-            {rawMode && mode === "edit" ? (
+            {mode === "edit" ? (
               <textarea
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
-                className="min-h-[280px] w-full resize-y rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-4 font-mono text-xs leading-relaxed text-[var(--color-fg)] outline-none focus:border-[var(--color-brand)] focus:ring-2 focus:ring-[var(--color-brand-soft)] sm:p-5"
+                className="h-full min-h-[280px] w-full resize-none rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-4 font-mono text-[13px] leading-relaxed text-[var(--color-fg)] outline-none focus:border-[var(--color-brand)] focus:ring-2 focus:ring-[var(--color-brand-soft)] sm:p-5"
                 spellCheck={false}
+                placeholder="Edit the prompt text..."
               />
             ) : (
               <PlaceholderHighlighter
@@ -429,7 +426,7 @@ export default function PromptEditor({ prompt, isFullscreen, onToggleFullscreen 
                 search={searchQuery}
                 activeMatchIndex={activeMatch}
                 activePhKey={activePhKey}
-                onPlaceholderClick={mode === "read" ? undefined : (key) => focusPh(key)}
+                onPlaceholderClick={(key) => focusPh(key)}
                 lineNumbers={lineNumbers}
                 onMatchesChange={setMatchCount}
               />
@@ -455,7 +452,7 @@ export default function PromptEditor({ prompt, isFullscreen, onToggleFullscreen 
 
         {/* Desktop variables panel */}
         {panelOpen && (
-          <div className="hidden shrink-0 border-l border-[var(--color-border)] md:block md:w-72 lg:w-80">
+          <div className="hidden min-h-0 shrink-0 overflow-hidden border-l border-[var(--color-border)] md:block md:w-72 lg:w-80">
             {variablesPanel}
           </div>
         )}
@@ -525,6 +522,23 @@ function ToolbarBtn({ children, onClick, icon, active, className = "" }) {
           ? "border-[var(--color-brand)] bg-[var(--color-brand-soft)] text-[var(--color-fg)]"
           : "border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-fg)] hover:border-[var(--color-brand)] hover:bg-[var(--color-brand-soft)]"
       } ${className}`}
+    >
+      {icon}
+      {children}
+    </button>
+  );
+}
+
+function SegBtn({ children, onClick, icon, active }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`inline-flex items-center gap-1 rounded px-2 py-1 text-[11px] font-medium transition ${
+        active
+          ? "bg-[var(--color-accent)] text-[var(--color-bg)] shadow-sm"
+          : "text-[var(--color-muted)] hover:text-[var(--color-fg)]"
+      }`}
     >
       {icon}
       {children}
