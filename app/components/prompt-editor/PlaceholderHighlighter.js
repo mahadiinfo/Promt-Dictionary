@@ -3,12 +3,8 @@
 import { forwardRef, useEffect, useMemo, useRef } from "react";
 import { TYPE_STYLES, tokenizePrompt } from "./utils";
 
-// Renders the (already variable-substituted) prompt text with placeholder
-// badges highlighted. Search matches are wrapped in <mark class="search-hit">.
-// `activePhId` gets a glowing brand ring.
 const PlaceholderHighlighter = forwardRef(function PlaceholderHighlighter(
   {
-    text,
     values,
     originalText,
     search,
@@ -20,12 +16,6 @@ const PlaceholderHighlighter = forwardRef(function PlaceholderHighlighter(
   },
   ref
 ) {
-  // Build a combined structure so we can highlight both placeholders AND
-  // search hits without the two collisions fighting each other.
-  //
-  // Strategy: tokenize the ORIGINAL prompt (so placeholder positions are
-  // stable) and, for each text/placeholder chunk, apply search highlighting
-  // on the *rendered* string (which may be a filled value).
   const tokens = useMemo(() => tokenizePrompt(originalText), [originalText]);
 
   const matchesRef = useRef([]);
@@ -44,21 +34,22 @@ const PlaceholderHighlighter = forwardRef(function PlaceholderHighlighter(
           />
         );
       } else {
-        const filled = values?.[tok.raw];
+        const dedupeKey = tok.phType === "natural" ? tok.raw.toLowerCase() : tok.raw;
+        const filled = values?.[dedupeKey];
         const isFilled = filled && filled.length > 0;
         const style = TYPE_STYLES[tok.phType] || TYPE_STYLES.square;
-        const isActive = activePhKey === tok.raw;
+        const isActive = activePhKey === dedupeKey;
         nodes.push(
           <button
             key={tok.phId}
             type="button"
             data-ph-id={tok.phId}
-            data-ph-key={tok.raw}
+            data-ph-key={dedupeKey}
             onClick={(e) => {
               e.stopPropagation();
-              onPlaceholderClick?.(tok.raw, tok.phId);
+              onPlaceholderClick?.(dedupeKey, tok.phId);
             }}
-            className="mx-[1px] inline-flex max-w-full items-center whitespace-pre-wrap break-words rounded-md border px-1.5 py-0.5 text-[0.95em] font-medium align-baseline transition hover:scale-[1.02]"
+            className="group mx-[1px] inline-flex max-w-full items-center gap-1 whitespace-pre-wrap break-words rounded-md border px-1.5 py-[1px] text-[0.95em] font-medium align-baseline transition-all duration-150 hover:-translate-y-[1px] hover:shadow-sm"
             style={{
               background: style.bg,
               borderColor: style.border,
@@ -67,12 +58,14 @@ const PlaceholderHighlighter = forwardRef(function PlaceholderHighlighter(
                 ? `0 0 0 2px var(--color-brand-soft), 0 0 0 3px ${style.border}`
                 : undefined,
             }}
-            title={isFilled ? `${tok.phName} · click to edit` : tok.phName}
+            title={isFilled ? `${tok.phName} · click to edit` : `${tok.phName} · empty`}
           >
             {isFilled ? (
               <SearchableText text={filled} search={search} matchesRef={matchesRef} />
             ) : (
-              <span className="opacity-90">{tok.raw}</span>
+              <span className="opacity-90">
+                {tok.phType === "natural" ? `⟨ ${tok.phName} ⟩` : tok.raw}
+              </span>
             )}
           </button>
         );
@@ -81,7 +74,6 @@ const PlaceholderHighlighter = forwardRef(function PlaceholderHighlighter(
     return nodes;
   }, [tokens, values, search, activePhKey, onPlaceholderClick]);
 
-  // Report new match count / active scroll each render.
   useEffect(() => {
     onMatchesChange?.(matchesRef.current.length);
     if (search && matchesRef.current[activeMatchIndex]) {
@@ -97,10 +89,13 @@ const PlaceholderHighlighter = forwardRef(function PlaceholderHighlighter(
     }
   }, [rendered, search, activeMatchIndex, onMatchesChange]);
 
-  // Line numbers pane
   const lineCount = useMemo(() => {
     const filled = tokens
-      .map((t) => (t.kind === "text" ? t.text : values?.[t.raw] || t.text))
+      .map((t) => {
+        if (t.kind === "text") return t.text;
+        const key = t.phType === "natural" ? t.raw.toLowerCase() : t.raw;
+        return values?.[key] || t.text;
+      })
       .join("");
     return filled.split("\n").length;
   }, [tokens, values]);
@@ -108,10 +103,10 @@ const PlaceholderHighlighter = forwardRef(function PlaceholderHighlighter(
   return (
     <div
       ref={ref}
-      className="relative flex gap-3 whitespace-pre-wrap break-words rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-4 text-sm leading-relaxed text-[var(--color-fg)]/90 sm:p-5"
+      className="relative flex gap-3 whitespace-pre-wrap break-words rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-4 text-[13.5px] leading-[1.75] text-[var(--color-fg)]/90 sm:p-5 sm:text-sm"
     >
       {lineNumbers && (
-        <div className="hidden select-none border-r border-[var(--color-border)] pr-3 text-right font-mono text-xs leading-relaxed text-[var(--color-muted)]/70 sm:block">
+        <div className="hidden select-none border-r border-[var(--color-border)] pr-3 text-right font-mono text-xs leading-[1.75] text-[var(--color-muted)]/60 sm:block">
           {Array.from({ length: lineCount }).map((_, i) => (
             <div key={i}>{i + 1}</div>
           ))}
@@ -137,7 +132,7 @@ function SearchableText({ text, search, matchesRef }) {
     parts.push(
       <mark
         key={`p-${n}-m`}
-        className="search-hit"
+        className="rounded-[3px] bg-[var(--color-brand)]/40 px-[1px] text-[var(--color-fg)]"
         ref={(el) => {
           if (el) matchesRef.current.push(el);
         }}
