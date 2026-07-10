@@ -179,14 +179,16 @@ export default function PromptModal({
                 id="prompt-modal-description"
                 className="flex min-h-0 flex-1 flex-col"
               >
-                <PromptEditor
-                  prompt={prompt}
-                  isFullscreen={fullscreen}
-                  onToggleFullscreen={() => setFullscreen((f) => !f)}
-                />
+                <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+                  <PromptEditor
+                    prompt={prompt}
+                    isFullscreen={fullscreen}
+                    onToggleFullscreen={() => setFullscreen((f) => !f)}
+                  />
+                </div>
 
                 {prompt.tags?.length > 0 && (
-                  <div className="flex flex-wrap items-center gap-1.5 border-t border-[var(--color-border)] px-4 py-2 sm:px-6">
+                  <div className="flex shrink-0 flex-wrap items-center gap-1.5 border-t border-[var(--color-border)] px-4 py-2 sm:px-6">
                     {prompt.tags.map((t) => (
                       <span
                         key={t}
