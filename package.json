@@ -6,6 +6,7 @@
     "seed": "node scripts/seed.mjs",
     "dev": "next dev",
     "build": "next build",
+    "build:dev": "next build",
     "start": "next start",
     "lint": "next lint"
   },
