@@ -24,6 +24,8 @@ async function loadHomeData() {
       }
     ]);
 
+    
+
     const categoryCountsArray = aggregationResult[0]?.categoryCounts || [];
     const totalPromptsCount = aggregationResult[0]?.totalCount[0]?.total || 0;
 
