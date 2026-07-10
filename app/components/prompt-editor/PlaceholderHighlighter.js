@@ -49,7 +49,7 @@ const PlaceholderHighlighter = forwardRef(function PlaceholderHighlighter(
               e.stopPropagation();
               onPlaceholderClick?.(dedupeKey, tok.phId);
             }}
-            className="group mx-[1px] inline-flex max-w-full items-center gap-1 whitespace-pre-wrap break-words rounded-md border px-1.5 py-[1px] text-[0.95em] font-medium align-baseline transition-all duration-150 hover:-translate-y-[1px] hover:shadow-sm"
+            className="group mx-[1px] inline-flex max-w-full cursor-pointer items-center gap-1 whitespace-pre-wrap break-words rounded-md border px-1.5 py-[1px] text-[0.95em] font-medium align-baseline transition-all duration-150 hover:-translate-y-[1px] hover:shadow-sm"
             style={{
               background: style.bg,
               borderColor: style.border,
@@ -132,7 +132,7 @@ function SearchableText({ text, search, matchesRef }) {
     parts.push(
       <mark
         key={`p-${n}-m`}
-        className="rounded-[3px] bg-[var(--color-brand)]/40 px-[1px] text-[var(--color-fg)]"
+        className="rounded-[3px] bg-[var(--color-brand)]/40 px-[1px] cursor-pointer text-[var(--color-fg)]"
         ref={(el) => {
           if (el) matchesRef.current.push(el);
         }}

@@ -267,7 +267,7 @@ function ToolBtn({ children, onClick, icon }) {
     <button
       type="button"
       onClick={onClick}
-      className="inline-flex items-center gap-1 rounded-md border border-[var(--color-border)] bg-[var(--color-bg)] px-2 py-1 text-[10px] font-medium text-[var(--color-fg)] transition hover:border-[var(--color-brand)] hover:bg-[var(--color-brand-soft)]"
+      className="inline-flex items-center cursor-pointer gap-1 rounded-md border border-[var(--color-border)] bg-[var(--color-bg)] px-2 py-1 text-[10px] font-medium text-[var(--color-fg)] transition hover:border-[var(--color-brand)] hover:bg-[var(--color-brand-soft)]"
     >
       {icon}
       {children}
