@@ -320,7 +320,7 @@ export default function PromptEditor({ prompt, isFullscreen, onToggleFullscreen 
             icon={panelOpen ? <PanelRightClose className="h-3.5 w-3.5" /> : <PanelRightOpen className="h-3.5 w-3.5" />}
             className="hidden md:inline-flex"
           >
-            <span className="hidden lg:inline">Variables</span>
+            <span className="hidden cursor-pointer lg:inline">Variables</span>
           </ToolbarBtn>
           {/* Mobile: variables drawer toggle */}
           <ToolbarBtn
@@ -434,7 +434,7 @@ export default function PromptEditor({ prompt, isFullscreen, onToggleFullscreen 
           </div>
 
           {/* Copy toolbar */}
-          <div className="flex flex-wrap items-center gap-1.5 border-t border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2">
+          <div className="flex flex-wrap  items-center gap-1.5 border-t border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2">
             <CopyBtn onClick={() => doCopy(finalText, "Copied filled prompt")} primary>
               <Copy className="h-3.5 w-3.5" /> Copy Prompt
             </CopyBtn>
@@ -517,7 +517,7 @@ function ToolbarBtn({ children, onClick, icon, active, className = "" }) {
     <button
       type="button"
       onClick={onClick}
-      className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[11px] font-medium transition ${
+      className={`inline-flex items-center gap-1 cursor-pointer rounded-md border px-2 py-1 text-[11px] font-medium transition ${
         active
           ? "border-[var(--color-brand)] bg-[var(--color-brand-soft)] text-[var(--color-fg)]"
           : "border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-fg)] hover:border-[var(--color-brand)] hover:bg-[var(--color-brand-soft)]"
@@ -534,7 +534,7 @@ function SegBtn({ children, onClick, icon, active }) {
     <button
       type="button"
       onClick={onClick}
-      className={`inline-flex items-center gap-1 rounded px-2 py-1 text-[11px] font-medium transition ${
+      className={`inline-flex items-center gap-1 rounded cursor-pointer px-2 py-1 text-[11px] font-medium transition ${
         active
           ? "bg-[var(--color-accent)] text-[var(--color-bg)] shadow-sm"
           : "text-[var(--color-muted)] hover:text-[var(--color-fg)]"
@@ -553,8 +553,8 @@ function CopyBtn({ children, onClick, primary }) {
       onClick={onClick}
       className={
         primary
-          ? "inline-flex items-center gap-1.5 rounded-lg bg-[var(--color-accent)] px-3 py-1.5 text-xs font-semibold text-[var(--color-bg)] shadow-sm transition hover:opacity-90"
-          : "inline-flex items-center gap-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] px-3 py-1.5 text-xs font-medium text-[var(--color-fg)] transition hover:border-[var(--color-brand)] hover:bg-[var(--color-brand-soft)]"
+          ? "inline-flex  items-center cursor-pointer gap-1.5 rounded-lg bg-[var(--color-accent)] px-3 py-1.5 text-xs font-semibold text-[var(--color-bg)] shadow-sm transition hover:opacity-90"
+          : "inline-flex items-center cursor-pointer gap-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] px-3 py-1.5 text-xs font-medium text-[var(--color-fg)] transition hover:border-[var(--color-brand)] hover:bg-[var(--color-brand-soft)]"
       }
     >
       {children}

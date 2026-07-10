@@ -207,7 +207,7 @@ export default function PromptModal({
                   type="button"
                   onClick={onPrev}
                   disabled={!prevPrompt}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-1.5 text-xs font-medium text-[var(--color-fg)] transition hover:bg-[var(--color-brand-soft)] disabled:cursor-not-allowed disabled:opacity-40"
+                  className="inline-flex items-center cursor-pointer gap-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-1.5 text-xs font-medium text-[var(--color-fg)] transition hover:bg-[var(--color-brand-soft)] disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   <ArrowLeft className="h-3.5 w-3.5" />
                   Previous
@@ -216,7 +216,7 @@ export default function PromptModal({
                   type="button"
                   onClick={onNext}
                   disabled={!nextPrompt}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-1.5 text-xs font-medium text-[var(--color-fg)] transition hover:bg-[var(--color-brand-soft)] disabled:cursor-not-allowed disabled:opacity-40"
+                  className="inline-flex items-center gap-1.5 cursor-pointer rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-1.5 text-xs font-medium text-[var(--color-fg)] transition hover:bg-[var(--color-brand-soft)] disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   Next
                   <ArrowRight className="h-3.5 w-3.5" />
