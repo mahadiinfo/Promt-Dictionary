@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, X } from "lucide-react";
-import CopyButton from "./CopyButton";
+import PromptEditor from "./prompt-editor/PromptEditor";
 
 const FOCUSABLE_SELECTORS = [
   'a[href]',
@@ -21,6 +21,12 @@ function getFocusableElements(container) {
   );
 }
 
+function isTypingTarget(el) {
+  if (!el) return false;
+  const tag = el.tagName;
+  return tag === "INPUT" || tag === "TEXTAREA" || el.isContentEditable;
+}
+
 export default function PromptModal({
   prompt,
   open,
@@ -32,6 +38,12 @@ export default function PromptModal({
 }) {
   const modalRef = useRef(null);
   const previousActiveElement = useRef(null);
+  const [fullscreen, setFullscreen] = useState(false);
+
+  // Reset fullscreen when modal reopens on a different prompt
+  useEffect(() => {
+    if (!open) setFullscreen(false);
+  }, [open, prompt?.id]);
 
   useEffect(() => {
     if (!open) return;
@@ -47,10 +59,18 @@ export default function PromptModal({
 
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
+        if (fullscreen) {
+          event.preventDefault();
+          setFullscreen(false);
+          return;
+        }
         event.preventDefault();
         onClose?.();
         return;
       }
+      // Don't hijack arrow keys while the user is typing.
+      if (isTypingTarget(event.target)) return;
+
       if (event.key === "ArrowLeft" && prevPrompt) {
         onPrev?.();
         return;
@@ -84,7 +104,11 @@ export default function PromptModal({
       document.body.style.overflow = originalOverflow;
       previousActiveElement.current?.focus?.();
     };
-  }, [open, onClose, onPrev, onNext, prevPrompt, nextPrompt]);
+  }, [open, onClose, onPrev, onNext, prevPrompt, nextPrompt, fullscreen]);
+
+  const sizeClasses = fullscreen
+    ? "max-h-screen h-screen w-screen max-w-none rounded-none sm:rounded-none"
+    : "max-h-[95vh] w-full max-w-5xl sm:max-h-[calc(100vh-3rem)] rounded-t-2xl sm:rounded-2xl";
 
   return (
     <AnimatePresence>
@@ -100,7 +124,9 @@ export default function PromptModal({
           />
 
           <motion.div
-            className="absolute inset-0 flex items-end justify-center p-0 sm:items-center sm:p-4 md:p-6"
+            className={`absolute inset-0 flex justify-center ${
+              fullscreen ? "items-stretch p-0" : "items-end p-0 sm:items-center sm:p-4 md:p-6"
+            }`}
             initial={{ opacity: 0, y: 16, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.98 }}
@@ -113,9 +139,9 @@ export default function PromptModal({
             <div
               ref={modalRef}
               onClick={(e) => e.stopPropagation()}
-              className="relative flex max-h-[95vh] w-full max-w-3xl flex-col overflow-hidden rounded-t-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-2xl sm:max-h-[calc(100vh-3rem)] sm:rounded-2xl"
+              className={`relative flex flex-col overflow-hidden border border-[var(--color-border)] bg-[var(--color-surface)] shadow-2xl ${sizeClasses}`}
             >
-              {/* Header */}
+              {/* Header — unchanged */}
               <header className="flex items-start justify-between gap-3 border-b border-[var(--color-border)] px-4 py-4 sm:px-6 sm:py-5">
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2 text-xs">
@@ -148,17 +174,19 @@ export default function PromptModal({
                 </button>
               </header>
 
-              {/* Body */}
+              {/* Body — smart prompt editor */}
               <div
                 id="prompt-modal-description"
-                className="flex-1 overflow-y-auto px-4 py-4 sm:px-6 sm:py-5"
+                className="flex min-h-0 flex-1 flex-col"
               >
-                <div className="whitespace-pre-wrap rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-4 text-sm leading-relaxed text-[var(--color-fg)]/90 sm:p-5">
-                  {prompt.prompt}
-                </div>
+                <PromptEditor
+                  prompt={prompt}
+                  isFullscreen={fullscreen}
+                  onToggleFullscreen={() => setFullscreen((f) => !f)}
+                />
 
                 {prompt.tags?.length > 0 && (
-                  <div className="mt-4 flex flex-wrap items-center gap-1.5">
+                  <div className="flex flex-wrap items-center gap-1.5 border-t border-[var(--color-border)] px-4 py-2 sm:px-6">
                     {prompt.tags.map((t) => (
                       <span
                         key={t}
@@ -171,30 +199,26 @@ export default function PromptModal({
                 )}
               </div>
 
-              {/* Footer */}
-              <footer className="flex flex-col-reverse gap-3 border-t border-[var(--color-border)] px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-4">
-                <CopyButton text={prompt.prompt} label="Copy Prompt" />
-
-                <div className="flex items-center justify-end gap-2">
-                  <button
-                    type="button"
-                    onClick={onPrev}
-                    disabled={!prevPrompt}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-1.5 text-xs font-medium text-[var(--color-fg)] transition hover:bg-[var(--color-brand-soft)] disabled:cursor-not-allowed disabled:opacity-40"
-                  >
-                    <ArrowLeft className="h-3.5 w-3.5" />
-                    Previous
-                  </button>
-                  <button
-                    type="button"
-                    onClick={onNext}
-                    disabled={!nextPrompt}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-1.5 text-xs font-medium text-[var(--color-fg)] transition hover:bg-[var(--color-brand-soft)] disabled:cursor-not-allowed disabled:opacity-40"
-                  >
-                    Next
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </button>
-                </div>
+              {/* Footer — prev/next only (editor owns copy) */}
+              <footer className="flex items-center justify-end gap-2 border-t border-[var(--color-border)] px-4 py-3 sm:px-6 sm:py-4">
+                <button
+                  type="button"
+                  onClick={onPrev}
+                  disabled={!prevPrompt}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-1.5 text-xs font-medium text-[var(--color-fg)] transition hover:bg-[var(--color-brand-soft)] disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  <ArrowLeft className="h-3.5 w-3.5" />
+                  Previous
+                </button>
+                <button
+                  type="button"
+                  onClick={onNext}
+                  disabled={!nextPrompt}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-1.5 text-xs font-medium text-[var(--color-fg)] transition hover:bg-[var(--color-brand-soft)] disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Next
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </button>
               </footer>
             </div>
           </motion.div>
