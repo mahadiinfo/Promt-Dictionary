@@ -529,6 +529,23 @@ function ToolbarBtn({ children, onClick, icon, active, className = "" }) {
   );
 }
 
+function SegBtn({ children, onClick, icon, active }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`inline-flex items-center gap-1 rounded px-2 py-1 text-[11px] font-medium transition ${
+        active
+          ? "bg-[var(--color-accent)] text-[var(--color-bg)] shadow-sm"
+          : "text-[var(--color-muted)] hover:text-[var(--color-fg)]"
+      }`}
+    >
+      {icon}
+      {children}
+    </button>
+  );
+}
+
 function CopyBtn({ children, onClick, primary }) {
   return (
     <button
