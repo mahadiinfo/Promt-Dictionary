@@ -5,7 +5,6 @@ import {
   BookOpen,
   CheckCircle2,
   ClipboardCopy,
-  Code2,
   Copy,
   Eye,
   FileText,
