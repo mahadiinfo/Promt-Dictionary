@@ -5,6 +5,10 @@ import { ToastProvider } from "@/app/components/Toast";
 export const metadata = {
   title: `${site.title} — ${site.tagline}`,
   description: site.description,
+  icons: {
+    icon: [{ url: "/favicon.png", type: "image/png" }],
+    apple: [{ url: "/favicon.png" }],
+  },
   openGraph: {
     title: site.title,
     description: site.description,
