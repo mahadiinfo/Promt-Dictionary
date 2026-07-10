@@ -295,18 +295,16 @@ export default function PromptEditor({ prompt, isFullscreen, onToggleFullscreen 
       {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-1.5 border-b border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2">
         <div className="flex flex-wrap items-center gap-1">
-          <ToolbarBtn
-            onClick={() => setMode(mode === "edit" ? "read" : "edit")}
-            icon={mode === "edit" ? <Eye className="h-3.5 w-3.5" /> : <Pencil className="h-3.5 w-3.5" />}
-            active={mode === "read"}
-          >
-            {mode === "edit" ? "Read" : "Edit"}
-          </ToolbarBtn>
+          <div className="inline-flex items-center rounded-md border border-[var(--color-border)] bg-[var(--color-bg)] p-0.5">
+            <SegBtn active={mode === "read"} onClick={() => setMode("read")} icon={<Eye className="h-3.5 w-3.5" />}>
+              Read
+            </SegBtn>
+            <SegBtn active={mode === "edit"} onClick={() => setMode("edit")} icon={<Pencil className="h-3.5 w-3.5" />}>
+              Edit
+            </SegBtn>
+          </div>
           <ToolbarBtn onClick={() => setSearchOpen((s) => !s)} icon={<SearchIcon className="h-3.5 w-3.5" />} active={searchOpen}>
             <span className="hidden sm:inline">Find</span>
-          </ToolbarBtn>
-          <ToolbarBtn onClick={() => setRawMode((r) => !r)} icon={<Code2 className="h-3.5 w-3.5" />} active={rawMode}>
-            <span className="hidden sm:inline">Raw</span>
           </ToolbarBtn>
           <ToolbarBtn onClick={() => setLineNumbers((v) => !v)} icon={<Hash className="h-3.5 w-3.5" />} active={lineNumbers}>
             <span className="hidden sm:inline">Lines</span>
