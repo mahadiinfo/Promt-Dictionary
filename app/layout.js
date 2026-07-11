@@ -1,6 +1,7 @@
 import "@/app/globals.css";
 import site from "@/app/data/site";
 import { ToastProvider } from "@/app/components/Toast";
+import { Analytics } from "@vercel/analytics/next"
 
 export const metadata = {
   title: `${site.title} — ${site.tagline}`,
@@ -37,7 +38,9 @@ export default function RootLayout({ children }) {
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body>
-        <ToastProvider>{children}</ToastProvider>
+        <ToastProvider>{children}
+        <Analytics/>
+        </ToastProvider>
       </body>
     </html>
   );
