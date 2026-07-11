@@ -1,7 +1,8 @@
 import "@/app/globals.css";
 import site from "@/app/data/site";
 import { ToastProvider } from "@/app/components/Toast";
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 export const metadata = {
   title: `${site.title} — ${site.tagline}`,
@@ -30,7 +31,11 @@ export default function RootLayout({ children }) {
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin=""
+        />
         <link
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap"
           rel="stylesheet"
@@ -38,8 +43,11 @@ export default function RootLayout({ children }) {
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body>
-        <ToastProvider>{children}
-        <Analytics/>
+        <ToastProvider>
+          {children}
+          <GoogleAnalytics gaId="G-LTEPXS1CXE" />
+
+          <Analytics />
         </ToastProvider>
       </body>
     </html>
