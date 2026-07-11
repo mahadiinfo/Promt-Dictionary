@@ -3,7 +3,7 @@ import site from "@/app/data/site";
 import { ToastProvider } from "@/app/components/Toast";
 import { Analytics } from "@vercel/analytics/next";
 import { GoogleAnalytics } from "@next/third-parties/google";
-
+import { SpeedInsights } from "@vercel/speed-insights/next";
 export const metadata = {
   title: `${site.title} — ${site.tagline}`,
   description: site.description,
@@ -46,6 +46,7 @@ export default function RootLayout({ children }) {
         <ToastProvider>
           {children}
           <GoogleAnalytics gaId="G-LTEPXS1CXE" />
+          <SpeedInsights />
 
           <Analytics />
         </ToastProvider>
