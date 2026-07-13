@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import Navbar from "./Navbar";
@@ -8,7 +9,8 @@ import Footer from "./Footer";
 import PromptDisplay from "./PromptDisplay";
 import CopyButton from "./CopyButton";
 import { createFuse, searchPrompts } from "@/app/lib/search";
-import PromptModal from "./PromptModal";
+
+const PromptModal = dynamic(() => import("./PromptModal"), { ssr: false });
 
 export default function CategoryClient({ category, prompts }) {
   const [query, setQuery] = useState("");
