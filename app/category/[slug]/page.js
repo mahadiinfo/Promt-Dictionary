@@ -4,7 +4,7 @@ import Category from "@/app/models/Category";
 import Prompt from "@/app/models/Prompt";
 import CategoryClient from "@/app/components/CategoryClient";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export default async function CategoryPage({ params }) {
   const { slug } = await params;

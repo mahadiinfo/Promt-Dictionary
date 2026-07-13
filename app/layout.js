@@ -1,9 +1,31 @@
 import "@/app/globals.css";
+import { Inter, Instrument_Serif, JetBrains_Mono } from "next/font/google";
 import site from "@/app/data/site";
 import { ToastProvider } from "@/app/components/Toast";
 import { Analytics } from "@vercel/analytics/next";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-sans",
+  weight: ["400", "500", "600", "700"],
+});
+const serif = Instrument_Serif({
+  subsets: ["latin"],
+  display: "swap",
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--font-display",
+});
+const mono = JetBrains_Mono({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-mono",
+  weight: ["400", "500"],
+});
+
 export const metadata = {
   title: `${site.title} — ${site.tagline}`,
   description: site.description,
@@ -28,18 +50,12 @@ const themeScript = `(function(){try{var t=localStorage.getItem('prompt-vault-th
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${inter.variable} ${serif.variable} ${mono.variable}`}
+    >
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin=""
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap"
-          rel="stylesheet"
-        />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body>
@@ -47,7 +63,6 @@ export default function RootLayout({ children }) {
           {children}
           <GoogleAnalytics gaId="G-LTEPXS1CXE" />
           <SpeedInsights />
-
           <Analytics />
         </ToastProvider>
       </body>

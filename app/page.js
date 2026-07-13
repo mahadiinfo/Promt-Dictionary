@@ -3,7 +3,7 @@ import Category from "@/app/models/Category";
 import Prompt from "@/app/models/Prompt";
 import HomeClient from "@/app/components/HomeClient";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 async function loadHomeData() {
   try {
