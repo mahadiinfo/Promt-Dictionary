@@ -5,8 +5,8 @@
   "scripts": {
     "seed": "node scripts/seed.mjs",
     "dev": "next dev",
-    "build": "next build && mkdir -p dist && cp -r .next/* dist/ 2>/dev/null || true",
-    "build:dev": "next build && mkdir -p dist && cp -r .next/* dist/ 2>/dev/null || true",
+    "build": "rm -rf dist && next build && mkdir -p dist && cp -r .next/* dist/ 2>/dev/null || true",
+    "build:dev": "rm -rf dist && next build && mkdir -p dist && cp -r .next/* dist/ 2>/dev/null || true",
     "start": "next start",
     "lint": "next lint"
   },
